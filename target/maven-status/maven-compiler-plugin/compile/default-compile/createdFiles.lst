@@ -1,0 +1,4 @@
+DAO\ContractDAO.class
+DB\DBContext.class
+Model\Contract.class
+Controller\ContractServlet.class
