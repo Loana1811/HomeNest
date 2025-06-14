@@ -45,6 +45,16 @@ public class Contract {
         this.status = status;
         this.createdAt = createdAt;
     }
+
+    public Contract(int contractId, int tenantId, int roomId, Date startDate, Date endDate, String status, Date createdAt) {
+        this.contractId = contractId;
+        this.tenantId = tenantId;
+        this.roomId = roomId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.status = status;
+        this.createdAt = createdAt;
+    }
     
     
 

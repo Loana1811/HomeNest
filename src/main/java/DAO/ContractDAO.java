@@ -24,7 +24,7 @@ public class ContractDAO extends DBContext {
         ArrayList<Contract> contracts = new ArrayList<>();
         // SQL query to select all contracts with tenant names from the Contracts and Tenants tables
         String query = "SELECT * from Contracts";
-                //
+        //
 
         // Use try-with-resources to automatically close database resources
         try ( Connection conn = getConnection(); // Establish database connection
@@ -64,5 +64,69 @@ public class ContractDAO extends DBContext {
         // Return the list of contracts
         return contracts;
     }
-}
 
+    public void addContract(Contract contract) throws SQLException {
+        String query = "INSERT INTO Contracts (TenantID, RoomID, StartDate, EndDate, Status, CreatedAt) VALUES (?, ?, ?, ?, ?, ?)";
+        try ( Connection conn = getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, contract.getTenantId());
+            ps.setInt(2, contract.getRoomId());
+            ps.setDate(3, new java.sql.Date(contract.getStartDate().getTime()));
+            ps.setDate(4, new java.sql.Date(contract.getEndDate().getTime()));
+            ps.setString(5, contract.getStatus());
+            ps.setDate(6, new java.sql.Date(contract.getCreatedAt().getTime()));
+            ps.setDouble(7, contract.getAmount());
+            ps.executeUpdate();
+            System.out.println("✅ Contract added for TenantID: " + contract.getTenantId());
+        } catch (SQLException ex) {
+            System.out.println("❌ SQL Query Error: " + ex.getMessage());
+            throw ex;
+        }
+    }
+
+    public void updateContract(Contract contract) throws SQLException {
+        String query = "UPDATE Contracts SET TenantID = ?, RoomID = ?, StartDate = ?, EndDate = ?, Status = ? WHERE ContractID = ?";
+        try ( Connection conn = getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, contract.getTenantId());
+            ps.setInt(2, contract.getRoomId());
+            ps.setDate(3, new java.sql.Date(contract.getStartDate().getTime()));
+            ps.setDate(4, new java.sql.Date(contract.getEndDate().getTime()));
+            ps.setString(5, contract.getStatus());
+            ps.setDouble(6, contract.getAmount());
+            ps.setInt(7, contract.getContractId());
+            ps.executeUpdate();
+            System.out.println("✅ Contract updated for ContractID: " + contract.getContractId());
+        } catch (SQLException ex) {
+            System.out.println("❌ SQL Query Error: " + ex.getMessage());
+            throw ex;
+        }
+    }
+
+    public Contract getContractById(int id) throws SQLException {
+        String query = "SELECT c.[ContractID], c.[TenantID], c.[RoomID], c.[StartDate], c.[EndDate], c.[Status], c.[CreatedAt] "
+                + "FROM [RentalManagement].[dbo].[Contracts] c "
+                + "JOIN [RentalManagement].[dbo].[Tenants] t ON c.[TenantID] = t.[TenantID] "
+                + "WHERE c.[ContractID] = ?";
+        try ( Connection conn = getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, id);
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Contract contract = new Contract(
+                            rs.getInt("ContractID"),
+                            rs.getInt("TenantID"),
+                            rs.getInt("RoomID"),
+                            rs.getDate("StartDate"),
+                            rs.getDate("EndDate"),
+                            rs.getString("Status"),
+                            rs.getDate("CreatedAt")
+                    );
+                    System.out.println("📌 Retrieved contract: " + contract.getContractId());
+                    return contract;
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("❌ SQL Query Error: " + ex.getMessage());
+            throw ex;
+        }
+        return null;
+    }
+}

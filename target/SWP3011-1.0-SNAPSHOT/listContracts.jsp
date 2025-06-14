@@ -115,9 +115,9 @@
                             <td><%= contract.getStatus()%></td>
                             <td><%= contract.getCreatedAt()%></td>
                             <td>
-                                <a href="<%= request.getContextPath()%>/contracts/show?id=<%= contract.getContractId()%>" class="btn btn-teal btn-sm mb-1">View</a>
-                                <a href="<%= request.getContextPath()%>/contracts/edit?id=<%= contract.getContractId()%>" class="btn btn-teal btn-sm mb-1">Edit</a>
-                                <a href="<%= request.getContextPath()%>/contracts/delete?id=<%= contract.getContractId()%>" class="btn btn-danger btn-sm mb-1" onclick="return confirm('Confirm delete?')">Delete</a>
+                                <a href="<%= request.getContextPath() %>/contracts?action=show&id=<%= contract.getContractId() %>" class="btn btn-teal btn-sm mb-1">View</a>
+                            <a href="<%= request.getContextPath() %>/contracts?action=edit&id=<%= contract.getContractId() %>" class="btn btn-teal btn-sm mb-1">Edit</a>
+                            <a href="<%= request.getContextPath() %>/contracts?action=delete&id=<%= contract.getContractId() %>" class="btn btn-teal btn-sm mb-1" onclick="return confirm('Confirm delete?')">Delete</a>
                             </td>
                         </tr>
                         <% } %>
@@ -143,7 +143,7 @@
             </div>
 
             <div class="text-center mt-3">
-                <a href="<%= request.getContextPath()%>/contracts/new" class="btn btn-teal">+ Create New Contract</a>
+                <a href="<%= request.getContextPath()%>/ContractServlet?action=create" class="btn btn-teal">+ Create New Contract</a>
             </div>
         </div>
 

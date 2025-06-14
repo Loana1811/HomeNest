@@ -24,7 +24,7 @@
 </head>
 <body>
     <div class="container mt-4">
-        <h1>Create New Contract</h1>
+        h1>Create New Contract</h1>
         <form id="createContractForm" action="contracts/save" method="post">
             <div class="mb-3">
                 <label for="tenantId" class="form-label">Tenant ID:</label>
@@ -43,8 +43,12 @@
                 <input type="date" class="form-control" id="endDate" name="endDate" required>
             </div>
             <div class="mb-3">
-                <label for="amount" class="form-label">Rental Amount (per month):</label>
-                <input type="number" class="form-control" id="amount" name="amount" required>
+                <label for="status" class="form-label">Status:</label>
+                <input type="text" class="form-control" id="status" name="status" required>
+            </div>
+            <div class="mb-3">
+                <label for="createdAt" class="form-label">Created At:</label>
+                <input type="date" class="form-control" id="createdAt" name="createdAt" required>
             </div>
             <div class="alert alert-danger" id="termsAlert" style="display:none;">You must agree to the terms and conditions to create a contract.</div>
             <div class="mb-3">
