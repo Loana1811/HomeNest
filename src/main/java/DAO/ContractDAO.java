@@ -91,8 +91,7 @@ public class ContractDAO extends DBContext {
             ps.setDate(3, new java.sql.Date(contract.getStartDate().getTime()));
             ps.setDate(4, new java.sql.Date(contract.getEndDate().getTime()));
             ps.setString(5, contract.getStatus());
-            ps.setDouble(6, contract.getAmount());
-            ps.setInt(7, contract.getContractId());
+            ps.setInt(6, contract.getContractId()); // Added missing parameter
             ps.executeUpdate();
             System.out.println("✅ Contract updated for ContractID: " + contract.getContractId());
         } catch (SQLException ex) {

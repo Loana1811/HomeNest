@@ -25,7 +25,7 @@
 <body>
     <div class="container mt-4">
         h1>Create New Contract</h1>
-        <form id="createContractForm" action="contracts/save" method="post">
+        <form id="create" action="contracts/save" method="post">
             <div class="mb-3">
                 <label for="tenantId" class="form-label">Tenant ID:</label>
                 <input type="text" class="form-control" id="tenantId" name="tenantId" required>

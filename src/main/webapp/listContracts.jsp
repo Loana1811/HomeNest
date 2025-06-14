@@ -143,7 +143,7 @@
             </div>
 
             <div class="text-center mt-3">
-                <a href="<%= request.getContextPath()%>/ContractServlet?action=create" class="btn btn-teal">+ Create New Contract</a>
+                <a href="<%= request.getContextPath()%>/contracts?action=create" class="btn btn-teal">+ Create New Contract</a>
             </div>
         </div>
 

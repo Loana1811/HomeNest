@@ -17,8 +17,8 @@
     <body>
         <div class="container mt-4">
             <h1>Edit Contract</h1>
-            <form action="contracts/update" method="post">
-                <input type="hidden" name="id" value="${contract.id}">
+            <form action="" method="post">
+              
                 <div class="mb-3">
                     <label for="tenantId" class="form-label">Tenant ID:</label>
                     <input type="text" class="form-control" id="tenantId" name="tenantId" value="${contract.tenantId}" required>
@@ -39,11 +39,7 @@
                     <label for="status" class="form-label">Status:</label>
                     <input type="text" class="form-control" id="status" name="status" value="${contract.status}" required>
                 </div>
-                <div class="mb-3">
-                    <label for="createdAt" class="form-label">Created At:</label>
-                    <input type="date" class="form-control" id="createdAt" name="createdAt" value="${contract.createdAt}" required>
-                </div>
-                <button type="submit" class="btn btn-teal">Update</button>
+                <button type="submit" class="btn btn-teal">Edit</button>
             </form>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
