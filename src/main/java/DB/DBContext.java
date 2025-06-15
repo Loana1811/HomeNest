@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class DBContext {
 
-    // Public database connection object
+     // Public database connection object
     public Connection conn;
 
     // Constant for database connection URL (localhost, port 1433, TourManagement_GR3 database, no encryption)

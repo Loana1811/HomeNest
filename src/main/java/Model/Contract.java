@@ -1,21 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Model;
 
 import java.util.Date;
 
-/**
- *
- * @author Admin
- */
 public class Contract {
 
     private int contractId;
     private int tenantId;
     private String tenantName;
     private int roomId;
+    private String roomNumber;
     private Date startDate;
     private Date endDate;
     private String status;
@@ -24,18 +17,6 @@ public class Contract {
 
     public Contract() {
     }
-
-//    public Contract(int contractId, int tenantId, String tenantName, int roomId, Date startDate, Date endDate, String status, Date createdAt, double amount) {
-//        this.contractId = contractId;
-//        this.tenantId = tenantId;
-//        this.tenantName = tenantName;
-//        this.roomId = roomId;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-//        this.status = status;
-//        this.createdAt = createdAt;
-//        this.amount = amount;
-//    }
 
     public Contract(int contractId, int roomId, Date startDate, Date endDate, String status, Date createdAt) {
         this.contractId = contractId;
@@ -63,9 +44,8 @@ public class Contract {
         this.endDate = endDate;
         this.status = status;
     }
-    
-    
 
+    // Getters and Setters
     public int getContractId() {
         return contractId;
     }
@@ -96,6 +76,14 @@ public class Contract {
 
     public void setRoomId(int roomId) {
         this.roomId = roomId;
+    }
+
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+
+    public void setRoomNumber(String roomNumber) {
+        this.roomNumber = roomNumber;
     }
 
     public Date getStartDate() {

@@ -5,7 +5,11 @@
 package Controller;
 
 import DAO.ContractDAO;
+import DAO.RoomDAO;
+import DAO.TenantDAO;
 import Model.Contract;
+import Model.Room;
+import Model.Tenant;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,14 +17,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
+import java.sql.Date;
 import java.util.List;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "ContractServlet", urlPatterns = {"/contracts"})
+@WebServlet(name = "ContractServlet", urlPatterns = {"/Contracts"})
 public class ContractServlet extends HttpServlet {
 
     /**
@@ -63,35 +67,22 @@ public class ContractServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        if ("list".equals(action) || action == null) {
+        if (action == null || action.equals("list")) {
             ContractDAO contractDAO = new ContractDAO();
             List<Contract> contracts = contractDAO.getAllContracts();
-            // Pagination logic (simple implementation)
-
             request.setAttribute("contracts", contracts);
+            request.getRequestDispatcher("/listContract.jsp").forward(request, response);
 
-            request.getRequestDispatcher("/listContracts.jsp").forward(request, response);
-        } else if ("create".equals(action)) {
+        } else if (action.equals("create")) {
+            TenantDAO tenantDAO = new TenantDAO();
+            RoomDAO roomDAO = new RoomDAO();
+
+            List<Tenant> tenants = tenantDAO.getAllTenants();
+            List<Room> rooms = roomDAO.getAvailableRooms();
+
+            request.setAttribute("tenants", tenants);
+            request.setAttribute("rooms", rooms);
             request.getRequestDispatcher("/createContract.jsp").forward(request, response);
-        } else if ("edit".equals(action)) {
-            String idParam = request.getParameter("id");
-            if (idParam != null && idParam.matches("\\d+")) {
-                int id = Integer.parseInt(idParam);
-                try {
-                    ContractDAO contractDAO = new ContractDAO();
-                    Contract contract = contractDAO.getContractById(id);
-                    if (contract != null) {
-                        request.setAttribute("contract", contract);
-                        request.getRequestDispatcher("/editContract.jsp").forward(request, response);
-                    } else {
-                        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Contract not found");
-                    }
-                } catch (SQLException e) {
-                    throw new ServletException("Error fetching contract", e);
-                }
-            } else {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid contract ID");
-            }
         }
     }
 
@@ -106,66 +97,33 @@ public class ContractServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         String action = request.getParameter("action");
 
         if ("create".equals(action)) {
-            String tenantIdStr = request.getParameter("tenantId");
-            String roomIdStr = request.getParameter("roomId");
-            String startDateStr = request.getParameter("startDate");
-            String endDateStr = request.getParameter("endDate");
-
-            if (tenantIdStr != null && roomIdStr != null && startDateStr != null && endDateStr != null) {
-                try {
-                    int tenantId = Integer.parseInt(tenantIdStr);
-                    int roomId = Integer.parseInt(roomIdStr);
-                    java.sql.Date startDate = java.sql.Date.valueOf(startDateStr);
-                    java.sql.Date endDate = java.sql.Date.valueOf(endDateStr);
-
-                    Contract newContract = new Contract(0, tenantId, roomId, startDate, endDate, "Active", new java.sql.Date(System.currentTimeMillis()));
-                    ContractDAO contractDAO = new ContractDAO();
-                    contractDAO.addContract(newContract);
-                    response.sendRedirect(request.getContextPath() + "/contracts");
-                } catch (SQLException e) {
-                    throw new ServletException("Error adding contract", e);
-                }
-            } else {
-                request.setAttribute("error", "Missing required fields");
-                request.getRequestDispatcher("/createContract.jsp").forward(request, response);
-            }
-        } else if ("edit".equals(action)) {
-            String idStr = request.getParameter("id");
-            if (idStr != null && idStr.matches("\\d+")) {
-                int id = Integer.parseInt(idStr);
-                String tenantIdStr = request.getParameter("tenantId");
-                String roomIdStr = request.getParameter("roomId");
-                String startDateStr = request.getParameter("startDate");
+            try {
+                int tenantId = Integer.parseInt(request.getParameter("tenantId"));
+                int roomId = Integer.parseInt(request.getParameter("roomId"));
+                Date startDate = Date.valueOf(request.getParameter("startDate"));
                 String endDateStr = request.getParameter("endDate");
-                String statusStr = request.getParameter("status");
 
-                if (tenantIdStr != null && roomIdStr != null && startDateStr != null && endDateStr != null && statusStr != null) {
-                    try {
-                        int tenantId = Integer.parseInt(tenantIdStr);
-                        int roomId = Integer.parseInt(roomIdStr);
-                        java.sql.Date startDate = java.sql.Date.valueOf(startDateStr);
-                        java.sql.Date endDate = java.sql.Date.valueOf(endDateStr);
+                Date endDate = (endDateStr == null || endDateStr.isEmpty()) ? null : Date.valueOf(endDateStr);
 
-                        Contract updatedContract = new Contract(tenantId, roomId, startDate, endDate, statusStr);
-                        updatedContract.setContractId(id); // Added to set ContractID
-                        ContractDAO contractDAO = new ContractDAO();
-                        contractDAO.updateContract(updatedContract);
-                        response.sendRedirect(request.getContextPath() + "/contracts?action=show&id=" + id);
-                    } catch (SQLException e) {
-                        throw new ServletException("Error updating contract", e);
-                    }
+                ContractDAO contractDAO = new ContractDAO();
+                boolean success = contractDAO.addContract(tenantId, roomId, startDate, endDate);
+
+                if (success) {
+                    response.sendRedirect("listContract.jsp"); // redirect về danh sách hợp đồng
                 } else {
-                    request.setAttribute("error", "Missing required fields");
-                    request.getRequestDispatcher("/editContract.jsp").forward(request, response);
+                    request.setAttribute("error", "Failed to create contract.");
+                    doGet(request, response);
                 }
-            } else {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid contract ID");
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("error", "Invalid input or system error.");
+                doGet(request, response);
             }
         }
+
     }
 
     /**
