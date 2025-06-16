@@ -1,9 +1,15 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
 package Controller;
 
 import dao.RoomDAO;
+import dao.CategoryDAO;
 import model.Room;
-
-import jakarta.servlet.ServletException;
+import model.Category;
+import utils.DBContext;
+import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
@@ -13,29 +19,28 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import utils.DBUtils;
 
 @WebServlet("/rooms")
 public class RoomListServlet extends HttpServlet {
 
-    private static final int PAGE_SIZE = 6; // số phòng trên 1 trang
+    private static final int PAGE_SIZE = 6;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // --- Lấy các tham số lọc ---
         String status = request.getParameter("status");
-        String type = request.getParameter("type");
+         
         String minPriceStr = request.getParameter("minPrice");
         String maxPriceStr = request.getParameter("maxPrice");
         String minAreaStr = request.getParameter("minArea");
         String maxAreaStr = request.getParameter("maxArea");
         String blockStr = request.getParameter("block");
+        String categoryStr = request.getParameter("category");
 
         Double minPrice = null, maxPrice = null;
         Double minArea = null, maxArea = null;
-        Integer blockID = null;
+        Integer blockID = null, categoryID = null;
 
         try {
             if (minPriceStr != null && !minPriceStr.trim().isEmpty()) {
@@ -53,11 +58,13 @@ public class RoomListServlet extends HttpServlet {
             if (blockStr != null && !blockStr.trim().isEmpty()) {
                 blockID = Integer.parseInt(blockStr);
             }
+            if (categoryStr != null && !categoryStr.trim().isEmpty()) {
+                categoryID = Integer.parseInt(categoryStr);
+            }
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
 
-        // --- Lấy số trang hiện tại ---
         int page = 1;
         String pageParam = request.getParameter("page");
         if (pageParam != null && !pageParam.isEmpty()) {
@@ -70,27 +77,33 @@ public class RoomListServlet extends HttpServlet {
 
         Connection conn = null;
         try {
-            conn = DBUtils.getConnection();
+            conn = DBContext.getConnection();
         } catch (SQLException ex) {
             Logger.getLogger(RoomListServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         RoomDAO dao = new RoomDAO(conn);
+        CategoryDAO categoryDAO = new CategoryDAO(conn);
 
-        // --- Tổng số phòng theo filter ---
-        int totalRooms = dao.totalRoomCount(status, type, minPrice, maxPrice, minArea, maxArea, blockID);
+        // Lấy danh sách phòng phân trang
+        int totalRooms = dao.totalRoomCount(status, minPrice, maxPrice, minArea, maxArea, blockID, categoryID);
         int totalPages = (int) Math.ceil((double) totalRooms / PAGE_SIZE);
         int offset = (page - 1) * PAGE_SIZE;
 
         List<Room> roomList = dao.roomsPaginated(
-                status, type, minPrice, maxPrice, minArea, maxArea, blockID,
+                status,  minPrice, maxPrice, minArea, maxArea, blockID, categoryID,
                 offset, PAGE_SIZE
         );
 
-        // Truyền dữ liệu về JSP
+        // Lấy danh sách category để đổ vào dropdown filter
+        List<Category> categoryList = categoryDAO.getAllCategories();
+
         request.setAttribute("roomList", roomList);
+        request.setAttribute("categoryList", categoryList); // ✅ Quan trọng
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
+        request.setAttribute("selectedCategory", categoryID);
+
         request.getRequestDispatcher("room-list.jsp").forward(request, response);
     }
 }

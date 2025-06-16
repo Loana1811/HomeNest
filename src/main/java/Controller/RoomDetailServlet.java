@@ -1,8 +1,12 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
 package Controller;
 
 import dao.RoomDAO;
 import model.Room;
-import utils.DBUtils;
+import utils.DBContext;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,7 +27,7 @@ public class RoomDetailServlet extends HttpServlet {
         List<Room> featuredRooms = null;
 
         if (idParam != null) {
-            try (Connection conn = DBUtils.getConnection()) {
+            try ( Connection conn = DBContext.getConnection()) {
                 int id = Integer.parseInt(idParam);
                 RoomDAO dao = new RoomDAO(conn);
                 room = dao.getRoomById(id);

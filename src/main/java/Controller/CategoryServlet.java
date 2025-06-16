@@ -6,8 +6,7 @@ package Controller;
 
 import dao.CategoryDAO;
 import model.Category;
-import utils.DBUtils;
-
+import utils.DBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -26,7 +25,7 @@ public class CategoryServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        try ( Connection conn = DBUtils.getConnection()) {
+        try (Connection conn = DBContext.getConnection()) {
             CategoryDAO dao = new CategoryDAO(conn);
 
             if ("edit".equals(action)) {
@@ -39,6 +38,10 @@ public class CategoryServlet extends HttpServlet {
                 int id = Integer.parseInt(request.getParameter("id"));
                 dao.deleteCategory(id);
                 response.sendRedirect("category?action=list");
+
+            } else if ("create".equals(action)) {
+                // ✅ Forward sang trang tạo category
+                request.getRequestDispatcher("category-create.jsp").forward(request, response);
 
             } else {
                 // Default: list categories
@@ -58,7 +61,7 @@ public class CategoryServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        try ( Connection conn = DBUtils.getConnection()) {
+        try (Connection conn = DBContext.getConnection()) {
             CategoryDAO dao = new CategoryDAO(conn);
 
             if ("create".equals(action)) {

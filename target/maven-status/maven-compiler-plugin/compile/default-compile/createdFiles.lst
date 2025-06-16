@@ -1,8 +1,8 @@
 Controller\CategoryServlet.class
 Controller\RoomDetailServlet.class
-utils\DBUtils.class
 model\Category.class
 dao\RoomDAO.class
 dao\CategoryDAO.class
 Controller\RoomListServlet.class
 model\Room.class
+utils\DBContext.class

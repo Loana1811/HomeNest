@@ -1,3 +1,9 @@
+<%-- 
+    Document   : room-detail
+    Created on : Jun 14, 2025, 3:45:45 PM
+    Author     : ADMIN
+--%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="model.Room" %>
 <%@ page import="java.text.SimpleDateFormat" %>
@@ -6,8 +12,8 @@
     Room room = (Room) request.getAttribute("room");
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
     String postDateStr = (room != null && room.getPostedDate() != null)
-                         ? sdf.format(room.getPostedDate())
-                         : "N/A";
+            ? sdf.format(room.getPostedDate())
+            : "N/A";
 %>
 <!DOCTYPE html>
 <html>
@@ -101,6 +107,30 @@
                 font-size: 1rem;
                 color: #555;
             }
+            .highlight-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin-top: 0.5rem;
+            }
+
+            .badge-tag {
+                display: inline-block;
+                background-color: #e6f2ff;
+                color: #0066cc;
+                border: 1px solid #b3daff;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 0.95rem;
+                font-weight: 500;
+                transition: 0.3s;
+            }
+
+            .badge-tag:hover {
+                background-color: #cce6ff;
+                color: #004080;
+                cursor: default;
+            }
 
 
         </style>
@@ -108,134 +138,113 @@
     <body class="d-flex flex-column min-vh-100">
 
         <main class="container my-5 flex-grow-1">
-            <% if (room != null) { %>
-            <%
-    List<Room> featuredRooms = (List<Room>) request.getAttribute("featuredRooms");
-            %>
-            <div class="row">
-                <!-- Cột trái: thông tin phòng -->
-                <div class="col-md-8">
-                    <div class="card room-card p-4 mb-4">
-                        <div class="text-center mb-4">
-                            <img src="images/rooms/<%= room.getImageName() != null ? room.getImageName() : "room-default.jpg" %>"
-                                 alt="Room Image"
-                                 class="room-image"
-                                 onerror="this.onerror=null;this.src='images/rooms/room-default.jpg';" />
-                        </div>
-
-                        <div class="room-info">
-                            <h3 class="fw-bold text-center mb-4">Room: <%= room.getRoomNumber() %></h3>
-                            <p><strong>Type:</strong> <%= room.getRoomType() %></p>
-                            <p><strong>Area:</strong> <%= room.getArea() %> m²</p>
-                            <p><strong>Status:</strong> <%= room.getStatus() %></p>
-                            <p><strong>Location:</strong> <%= room.getLocation() %></p>
-                            <p><strong>Block:</strong> <%= room.getBlockName() %></p>
-                            <p><strong>Post:</strong> <%= postDateStr %></p>
-                            <p class="room-price"><strong>Price:</strong> <%= String.format("%,.0f", room.getRentPrice()) %> ₫ / month</p>
-                        </div>
-
-                        <p style="font-size: 1.35rem; font-weight: 700;"><strong>Description:</strong></p>
-                        <div class="room-description">
-                            <%= room.getDescription() != null ? room.getDescription() : "No description available." %>
-                        </div>
-                    </div>
+    <% if (room != null) { %>
+    <%
+        List<Room> featuredRooms = (List<Room>) request.getAttribute("featuredRooms");
+    %>
+    <div class="row">
+        <!-- Cột trái -->
+        <div class="col-md-8">
+            <div class="card room-card p-4 mb-4">
+                <div class="text-center mb-4">
+                    <img src="images/rooms/<%= room.getImagePath() != null ? room.getImagePath() : "room-default.jpg"%>"
+                         alt="Room Image"
+                         class="room-image"
+                         onerror="this.onerror=null;this.src='images/rooms/room-default.jpg';" />
                 </div>
 
-                <!-- Right Column -->
-                <div class="col-md-4">
-                    <!-- Contact Section -->
-                    <div class="card contact-card mb-4">
-                        <h5 class="fw-bold mb-3">Contact</h5>
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="contact-avatar me-3"></div>
-                            <div>
-                                <p class="mb-0 fw-bold">HomeNest</p>
-                                <p class="mb-0 text-muted small">Member since: 01/01/2024</p>
-                            </div>
-                        </div>
-                        <a href="tel:0909123456" class="btn btn-success w-100 mb-2">
-                            <i class="bi bi-telephone-fill me-2"></i>0909 123 456
-                        </a>
-                        <a href="#" class="btn btn-primary w-100">
-                            <i class="bi bi-chat-dots me-2"></i>Message on Zalo
-                        </a>
-                    </div>
+                <div class="room-info">
+                    <h3 class="fw-bold text-center mb-4">Room: <%= room.getRoomNumber()%></h3>
 
-                    <!-- Featured Listings -->
-                    <div class="card highlight-card">
-                        <h6 class="fw-bold mb-3">Featured Listings</h6>
+                    <p><strong>Area:</strong> <%= room.getArea()%> m²</p>
+                    <p><strong>Status:</strong> <%= room.getStatus()%></p>
+                     
+                    <p><strong>Block:</strong> <%= room.getBlockName()%></p>
+                    <p><strong>Post:</strong> <%= postDateStr%></p>
+                    <p class="room-price"><strong>Price:</strong> <%= String.format("%,.0f", room.getRentPrice())%> ₫ / month</p>
 
-                        <% for (Room r : featuredRooms) { %>
-                        <div class="d-flex mb-3 border-bottom pb-2">
-                            <img src="images/rooms/<%= r.getImageName() != null ? r.getImageName() : "room-default.jpg" %>"
-                                 alt="thumbnail"
-                                 class="rounded"
-                                 style="width: 64px; height: 64px; object-fit: cover; margin-right: 10px;">
-                            <div>
-                                <a href="room-detail?id=<%= r.getRoomID() %>" class="fw-semibold text-danger text-decoration-none d-block">
-                                    Room <%= r.getRoomNumber() %> - <%= r.getRoomType() %>
-                                </a>
-                                <small><%= String.format("%,.1f", r.getRentPrice()/1000000) %> mil VND/month</small>
-                            </div>
-                        </div>
-                        <% } %>
-                    </div>
+                    <p><strong>Highlights</strong>
+                        <%
+                            if (room.getHighlights() != null && !room.getHighlights().trim().isEmpty()) {
+                                String[] highlights = room.getHighlights().split(",");
+                                for (String h : highlights) {
+                        %>
+                        <span class="badge-tag"><%= h.trim() %></span>
+                        <%
+                                }
+                            } else {
+                        %>
+                        <span class="text-muted">No highlights available.</span>
+                        <%
+                            }
+                        %>
+                    </p>
                 </div>
-
-            </div>
-            <% } else { %>
-            <div class="alert alert-danger mt-5">No room found.</div>
-            <% } %>
-        </main>
-
-        <!-- ====== FOOTER ====== -->
-      <footer class="bg-light text-dark mt-5 pt-4 pb-3 border-top">
-    <div class="container-fluid px-5">
-
-        <div class="row gy-4 justify-content-between">
-            <!-- Cột 1: Logo + địa chỉ -->
-            <div class="col-md-3 text-start">
-                <div class="d-flex align-items-center mb-2">
-                    <img src="<%= request.getContextPath() %>/images/logo.jpg"
-                         alt="HomeNest Logo"
-                         style="height: 48px;"
-                         class="me-2">
-                    <h5 class="fw-bold text-success mb-0">HOMENEST</h5>
-                </div>
-                <p class="mb-1"><i class="bi bi-geo-alt-fill"></i> IT Campus, Ninh Kieu District, Can Tho City</p>
-                <p><i class="bi bi-telephone-fill"></i> 0889 469 948</p>
             </div>
 
-            <!-- Cột 2: Policies -->
-            <div class="col-md-2">
-                <h6 class="fw-bold">POLICIES</h6>
-                <p>Operating Policy</p>
-                <p>Terms of Use</p>
-            </div>
-
-            <!-- Cột 3: Guidelines -->
-            <div class="col-md-3">
-                <h6 class="fw-bold">GUIDELINES</h6>
-                <p>How to post a room</p>
-                <p>Contact Support</p>
-            </div>
-
-            <!-- Cột 4: Support -->
-            <div class="col-md-3">
-                <h6 class="fw-bold">CUSTOMER SUPPORT</h6>
-                <p><i class="bi bi-envelope"></i> support@homenest.vn</p>
-                <p><i class="bi bi-heart-fill text-danger"></i> Dedicated customer care</p>
+            <p style="font-size: 1.35rem; font-weight: 700;"><strong>Description:</strong></p>
+            <div class="room-description">
+                <%= room.getDescription() != null ? room.getDescription() : "No description available."%>
             </div>
         </div>
-        <hr>
-        <div class="text-center small text-muted">
-            &copy; 2025 HomeNest. Designed by FPTU SE team.
+
+        <!-- ✅ Cột phải ĐÃ ĐƯA VÀO TRONG .row -->
+        <div class="col-md-4">
+            <!-- Contact -->
+            <div class="card contact-card mb-4">
+                <h5 class="fw-bold mb-3">Contact</h5>
+                <div class="d-flex align-items-center mb-3">
+                    <img src="<%= request.getContextPath()%>/images/logo.jpg"
+                         alt="Avatar"
+                         class="contact-avatar me-3"
+                         style="object-fit: cover;">
+                    <div>
+                        <p class="mb-0 fw-bold">HomeNest</p>
+                    </div>
+                </div>
+                <a href="tel:0909123456" class="btn btn-success w-100 mb-2">
+                    <i class="bi bi-telephone-fill me-2"></i>0889469948
+                </a>
+            </div>
+
+            <!-- Featured Listings -->
+            <div class="card highlight-card">
+                <h6 class="fw-bold mb-3">Featured Listings</h6>
+
+                <%
+                    for (Room r : featuredRooms) {
+                        String posted = (r.getPostedDate() != null) ? sdf.format(r.getPostedDate()) : "N/A";
+                %>
+                <a href="room-detail?id=<%= r.getRoomID()%>" class="text-decoration-none text-dark">
+                    <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
+                        <img src="images/rooms/<%= r.getImagePath() != null ? r.getImagePath() : "room-default.jpg"%>"
+                             alt="thumbnail"
+                             class="rounded"
+                             style="width: 64px; height: 64px; object-fit: cover; margin-right: 10px;">
+                        <div class="flex-grow-1 d-flex flex-column">
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-semibold text-dark">
+                                    <%= String.format("%.2f", r.getRentPrice() / 1_000_000)%> mil VND/month
+                                </span>
+                                <small class="text-muted" style="white-space: nowrap; min-width: 90px; text-align: right; font-size: 0.75rem; font-style: italic;">
+                                    <%= posted%>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <% } %>
+            </div>
         </div>
-    </div>
-</footer>
+    </div> <!-- end .row -->
+    <% } else { %>
+    <div class="alert alert-danger mt-5">No room found.</div>
+    <% } %>
+</main>
 
 
+    <!-- ====== FOOTER ====== -->
+    <jsp:include page="footer.jsp" />
 
-
-    </body>
+</body>
 </html>

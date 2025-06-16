@@ -14,16 +14,16 @@ public class Room {
 
     private int roomID;
     private String roomNumber;
-    private String roomType;
     private double rentPrice;
     private double area;
-    private String location;
+     
     private String status;
     private String categoryName; // nếu có dùng JOIN
     private Date postedDate;
     private int blockID;
     private String blockName;
     private String description;
+    private String highlights;
 
     // Getters và Setters
     public int getRoomID() {
@@ -42,14 +42,6 @@ public class Room {
         this.roomNumber = roomNumber;
     }
 
-    public String getRoomType() {
-        return roomType;
-    }
-
-    public void setRoomType(String roomType) {
-        this.roomType = roomType;
-    }
-
     public double getRentPrice() {
         return rentPrice;
     }
@@ -66,13 +58,7 @@ public class Room {
         this.area = area;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
+ 
 
     public String getStatus() {
         return status;
@@ -89,14 +75,14 @@ public class Room {
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
-    private String imageName;
+    private String imagePath;
 
-    public String getImageName() {
-        return imageName;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
     private int categoryID; // thêm thuộc tính
 
@@ -138,6 +124,14 @@ public class Room {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getHighlights() {
+        return highlights;
+    }
+
+    public void setHighlights(String highlights) {
+        this.highlights = highlights;
     }
 
 }

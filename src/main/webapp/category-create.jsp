@@ -43,7 +43,7 @@
 <body class="bg-light">
     <div class="form-container">
         <div class="form-title">Add New Category</div>
-        <form method="post" action="createcategogy">
+        <form method="post" action="category?action=create">
             <div class="form-group">
                 <label for="categoryName">Name <span class="text-danger">*</span></label>
                 <input type="text" id="categoryName" name="categoryName" class="form-control" required>
@@ -55,7 +55,7 @@
             </div>
 
             <div class="btn-group mt-4">
-                <a href="category-list.jsp" class="btn btn-outline-primary">Cancel</a>
+                <a href="category?action=list" class="btn btn-outline-primary">Cancel</a>
                 <button type="submit" class="btn btn-success">Submit</button>
             </div>
         </form>
