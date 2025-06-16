@@ -34,7 +34,7 @@
                         <td>${contract.createdAt}</td>
                         <td>
                             <a href="contracts?action=view&id=${contract.contractId}" class="btn btn-info btn-sm">View</a>
-                            <a href="contracts?action=edit&id=${contract.contractId}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="<%= request.getContextPath() %>/Contracts?action=edit&id=${contract.contractId}" class="btn btn-warning btn-sm">Edit</a>
                             <a href="contracts?action=delete&id=${contract.contractId}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
                         </td>
                     </tr>

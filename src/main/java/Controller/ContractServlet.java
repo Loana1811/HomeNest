@@ -1,6 +1,6 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+     * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+     * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package Controller;
 
@@ -83,7 +83,22 @@ public class ContractServlet extends HttpServlet {
             request.setAttribute("tenants", tenants);
             request.setAttribute("rooms", rooms);
             request.getRequestDispatcher("/createContract.jsp").forward(request, response);
+        } else if (action.equals("edit")) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            ContractDAO contractDAO = new ContractDAO();
+            Contract contract = contractDAO.getContractById(id);
+
+            RoomDAO roomDAO = new RoomDAO();
+            List<Room> rooms = roomDAO.getAvailableRoomsIncludingCurrent(contract.getRoomId());
+
+            System.out.println(contract.getRoomId());
+            System.out.println("DEBUG rooms.size() = " + rooms.size()); // phải > 0
+            request.setAttribute("rooms", rooms);
+            request.setAttribute("contract", contract);
+            request.getRequestDispatcher("/editContract.jsp").forward(request, response);
+           
         }
+
     }
 
     /**
@@ -112,11 +127,40 @@ public class ContractServlet extends HttpServlet {
                 boolean success = contractDAO.addContract(tenantId, roomId, startDate, endDate);
 
                 if (success) {
-                    response.sendRedirect("listContract.jsp"); // redirect về danh sách hợp đồng
+                    response.sendRedirect(request.getContextPath() + "/Contracts?action=list");
                 } else {
                     request.setAttribute("error", "Failed to create contract.");
                     doGet(request, response);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("error", "Invalid input or system error.");
+                doGet(request, response);
+            }
+        } else if ("update".equals(action)) {
+            try {
+                int contractId = Integer.parseInt(request.getParameter("contractId"));
+                int tenantId = Integer.parseInt(request.getParameter("tenantId"));
+                int roomId = Integer.parseInt(request.getParameter("roomId"));
+                Date startDate = Date.valueOf(request.getParameter("startDate"));
+                String endDateStr = request.getParameter("endDate");
+                String status = request.getParameter("status");
+
+                Date endDate = (endDateStr == null || endDateStr.isEmpty()) ? null : Date.valueOf(endDateStr);
+
+                Contract contract = new Contract();
+                contract.setContractId(contractId);
+                contract.setTenantId(tenantId);
+                contract.setRoomId(roomId);
+                contract.setStartDate(startDate);
+                contract.setEndDate(endDate);
+                contract.setStatus(status);
+
+                ContractDAO contractDAO = new ContractDAO();
+                contractDAO.updateContract(contract);
+
+                response.sendRedirect(request.getContextPath() + "/Contracts?action=list");
+
             } catch (Exception e) {
                 e.printStackTrace();
                 request.setAttribute("error", "Invalid input or system error.");
