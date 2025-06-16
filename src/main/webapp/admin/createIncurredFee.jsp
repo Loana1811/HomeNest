@@ -1,92 +1,92 @@
-<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%
+    List<Object[]> rooms = (List<Object[]>) request.getAttribute("rooms");
+    String[] units = {"kWh", "Khối", "Tháng", "Người", "Chiếc", "Lần", "Cái", "Bình", "m2", "Giờ"};
+%>
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Create Incurred Fee</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
-        <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+        <title>Create Utility</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body class="container mt-4">
+        <h3 class="mb-3">➕ Add New Utility</h3>
+        <% String error = (String) request.getAttribute("error"); %>
+        <% if (error != null) {%>
+        <div class="alert alert-danger"><%= error%></div>
+        <% } %>
+        <form action="utility?action=create" method="post" onsubmit="return validateForm()">
+            <div class="mb-3">
+                <label>Name</label>
+                <input type="text" name="name" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label>Unit</label>
+                <select name="unit" class="form-select" required>
+                    <% for (String unit : units) {%>
+                    <option value="<%= unit%>"><%= unit%></option>
+                    <% } %>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label>Price (VND)</label>
+                <input type="number" step="0.01" min="0" name="price" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold d-flex justify-content-between align-items-center">
+                    <span>✅ Select rooms to apply this utility</span>
+                    <span>
+                        <input type="checkbox" id="selectAll" class="form-check-input me-1" onclick="toggleAllRooms(this)">
+                        <label for="selectAll" class="form-check-label">Select all</label>
+                    </span>
+                </label>
+                <small class="text-muted mb-2 d-block">List of applicable rooms</small>
+
+                <div class="row">
+                    <% if (rooms != null) {
+                            for (int i = 0; i < rooms.size(); i++) {
+                                Object[] room = rooms.get(i);
+                                int roomId = (Integer) room[0];
+                                String roomName = (String) room[1];
+                    %>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-check">
+                            <input type="checkbox" name="roomIds" value="<%= roomId%>" class="form-check-input room-checkbox" id="room_<%= roomId%>">
+                            <label class="form-check-label fw-semibold" for="room_<%= roomId%>">Room <%= roomName%></label>
+                        </div>
+                    </div>
+                    <% }
+                    }%>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success">✅ Create</button>
+                <a href="utility?action=list" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+
         <script>
-            // Nếu muốn dùng màu primary, thêm config cho Tailwind
-            tailwind.config = {
-                theme: {
-                    extend: {
-                        colors: {
-                            primary: '#22c55e' // xanh lá, bạn có thể đổi màu khác
-                        }
-                    }
+            function toggleAllRooms(source) {
+                const checkboxes = document.querySelectorAll('.room-checkbox');
+                checkboxes.forEach(cb => cb.checked = source.checked);
+            }
+
+            function validateForm() {
+                const price = document.querySelector('input[name="price"]').value;
+                const name = document.querySelector('input[name="name"]').value;
+                if (isNaN(price) || parseFloat(price) < 0 || price.trim() === "" || name.trim() === "") {
+                    alert("⚠️ Please fill in all required fields correctly.");
+                    return false;
                 }
+                return true;
             }
         </script>
-    </head>
-    <body class="bg-gray-50 min-h-screen">
-        <div class="max-w-xl mx-auto mt-10 bg-white p-8 rounded-xl shadow">
-            <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
-                <i class="ri-add-circle-line text-primary"></i> Create New Incurred Fee
-            </h2>
-            <form action="CreateIncurredFees" method="post" class="space-y-5">
-                <!-- Block -->
-                <div>
-                    <label for="block" class="block text-sm font-medium text-gray-700 mb-1">Block</label>
-                    <select id="block" name="block" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option value="">-- Select Block --</option>
-                        <!-- Nếu có backend, dùng JSTL để lặp danh sách block -->
-                        <%-- 
-                        <c:forEach var="block" items="${blockList}">
-                            <option value="${block.blockID}">${block.blockName}</option>
-                        </c:forEach>
-                        --%>
-                        <option value="A">Block A</option>
-                        <option value="B">Block B</option>
-                    </select>
-                </div>
-                <!-- Room -->
-                <div>
-                    <label for="room" class="block text-sm font-medium text-gray-700 mb-1">Room</label>
-                    <select id="room" name="room" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option value="">-- Select Room --</option>
-                        <%-- 
-                        <c:forEach var="room" items="${roomList}">
-                            <option value="${room.roomID}">${room.roomNumber}</option>
-                        </c:forEach>
-                        --%>
-                        <option value="101">101</option>
-                        <option value="202">202</option>
-                    </select>
-                </div>
-                <!-- Bill Date -->
-                <div>
-                    <label for="billDate" class="block text-sm font-medium text-gray-700 mb-1">Bill Date</label>
-                    <input type="date" id="billDate" name="billDate" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                </div>
-                <!-- Fee Name -->
-                <div>
-                    <label for="feeName" class="block text-sm font-medium text-gray-700 mb-1">Fee Name</label>
-                    <select id="feeName" name="feeName" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option value="">-- Select Fee Type --</option>
-                        <%-- 
-                        <c:forEach var="fee" items="${feeTypeList}">
-                            <option value="${fee.incurredFeeTypeID}">${fee.feeName}</option>
-                        </c:forEach>
-                        --%>
-                        <option value="1">Cleaning Fee</option>
-                        <option value="2">Parking Fee</option>
-                    </select>
-                </div>
-                <!-- Amount -->
-                <div>
-                    <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
-                    <input type="number" id="amount" name="amount" min="0" step="1000" placeholder="Enter amount (VND)" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                </div>
-                <!-- Submit -->
-                <div class="pt-2">
-                    <button type="submit"
-                            class="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-green-600 transition flex items-center justify-center">
-                        <i class="ri-save-line mr-1"></i>
-                        Save Incurred Fee
-                    </button>
-                </div>
-            </form>
-        </div>
     </body>
 </html>
