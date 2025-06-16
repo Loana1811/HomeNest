@@ -5,6 +5,7 @@
 package utils;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,13 +20,13 @@ import java.util.logging.Logger;
 public class DBContext {
     // Public database connection object
 
-
     private Connection conn;
 
     // Update these constants based on your SQL Server config
     private final String DB_URL = "jdbc:sqlserver://127.0.0.1:1433;databaseName=RentalManagement;encrypt=false";
     private final String DB_USER = "sa";
-    private final String DB_PWD = "18112004";
+    // private final String DB_PWD = "18112004";
+    private final String DB_PWD = "123456";
 
     public DBContext() {
         try {
@@ -50,7 +51,7 @@ public class DBContext {
     }
 
     public int execQuery(String query, Object[] params) throws SQLException {
-        try (PreparedStatement pStatement = getConnection().prepareStatement(query)) {
+        try ( PreparedStatement pStatement = getConnection().prepareStatement(query)) {
             if (params != null) {
                 for (int i = 0; i < params.length; i++) {
                     pStatement.setObject(i + 1, params[i]);
@@ -72,5 +73,18 @@ public class DBContext {
 
     public ResultSet execSelectQuery(String query) throws SQLException {
         return this.execSelectQuery(query, null);
+    }
+
+    public int execUpdateQuery(String query, Object... params) throws SQLException {
+        try ( Connection conn = getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+
+            if (params != null) {
+                for (int i = 0; i < params.length; i++) {
+                    ps.setObject(i + 1, params[i]);
+                }
+            }
+
+            return ps.executeUpdate();
+        }
     }
 }
