@@ -6,6 +6,8 @@ package DAO;
 
 import DB.DBContext;
 import Model.Tenant;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
@@ -33,4 +35,27 @@ public class TenantDAO extends DBContext {
 
         return tenants;
     }
+
+    public Tenant getTenantById(int tenantId) {
+        Tenant tenant = null;
+        String squery = "SELECT * FROM Tenants WHERE TenantID = ?";
+
+        try ( PreparedStatement ps = conn.prepareStatement(squery)) {
+            ps.setInt(1, tenantId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                tenant = new Tenant();
+                tenant.setTenantID(rs.getInt("TenantID"));
+                tenant.setCustomerID(rs.getInt("CustomerID"));
+                tenant.setJoinDate(rs.getDate("JoinDate"));
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return tenant;
+    }
+
 }

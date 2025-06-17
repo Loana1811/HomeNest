@@ -110,4 +110,18 @@ public class ContractDAO extends DBContext {
         return null;
     }
 
+    public boolean deleteContract(int contractId) {
+        String sql = "DELETE FROM Contracts WHERE ContractID = ?";
+        try ( Connection conn = this.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, contractId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

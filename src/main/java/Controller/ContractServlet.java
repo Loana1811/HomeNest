@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,7 +97,31 @@ public class ContractServlet extends HttpServlet {
             request.setAttribute("rooms", rooms);
             request.setAttribute("contract", contract);
             request.getRequestDispatcher("/editContract.jsp").forward(request, response);
-           
+
+        } else if ("view".equals(action)) {
+            String idParam = request.getParameter("id");
+
+            if (idParam == null || idParam.isEmpty()) {
+                response.sendRedirect("Contracts");
+                return;
+            }
+
+            int contractId = Integer.parseInt(idParam);
+
+            ContractDAO contractDAO = new ContractDAO();
+            TenantDAO tenantDAO = new TenantDAO();
+            RoomDAO roomDAO = new RoomDAO();
+
+            Contract contract = contractDAO.getContractById(contractId);
+            Tenant tenant = tenantDAO.getTenantById(contract.getTenantId());
+            Room room = roomDAO.getRoomById(contract.getRoomId());
+
+            request.setAttribute("contract", contract);
+            request.setAttribute("tenant", tenant);
+            request.setAttribute("room", room);
+
+            request.getRequestDispatcher("viewDetail.jsp").forward(request, response);
+            return;
         }
 
     }
@@ -166,6 +191,19 @@ public class ContractServlet extends HttpServlet {
                 request.setAttribute("error", "Invalid input or system error.");
                 doGet(request, response);
             }
+        } else if ("delete".equals(action)) {
+            int contractId = Integer.parseInt(request.getParameter("contractId"));
+
+            ContractDAO contractDAO = new ContractDAO();
+            boolean deleted = contractDAO.deleteContract(contractId);
+
+            if (deleted) {
+                System.out.println("Contract " + contractId + " deleted successfully.");
+            } else {
+                System.out.println("Failed to delete contract " + contractId);
+            }
+
+            response.sendRedirect("Contracts"); // quay lại danh sách
         }
 
     }

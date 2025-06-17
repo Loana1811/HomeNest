@@ -69,4 +69,31 @@ public class RoomDAO extends DBContext {
         return rooms;
     }
 
+    public Room getRoomById(int roomId) {
+        Room room = null;
+        String squery = "SELECT * FROM Rooms WHERE RoomID = ?";
+
+        try ( PreparedStatement ps = conn.prepareStatement(squery)) {
+            ps.setInt(1, roomId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                room = new Room();
+                room.setRoomID(rs.getInt("RoomID"));
+                room.setRoomNumber(rs.getString("RoomNumber"));
+                room.setRoomType(rs.getString("RoomType"));
+                room.setRentPrice(rs.getDouble("RentPrice"));
+                room.setArea(rs.getDouble("Area"));
+                room.setLocation(rs.getString("Location"));
+                room.setStatus(rs.getString("Status"));
+                room.setBlockID(rs.getInt("BlockID"));
+                room.setCategoryID(rs.getInt("CategoryID"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return room;
+    }
+
 }
