@@ -30,8 +30,8 @@
                                 <td>${contract.roomNumber}</td>
                                 <td>${contract.startDate}</td>
                                 <td>${contract.endDate}</td>
-                                <td>${contract.status}</td>
-                                <td>${contract.createdAt}</td>
+                                <td>${contract.contractstatus}</td>
+                                <td>${contract.contractcreatedAt}</td>
                                 <td>
                                     <a href="<%= request.getContextPath()%>/Contracts?action=view&id=${contract.contractId}" class="btn btn-info btn-sm">View</a>
                                     <a href="<%= request.getContextPath()%>/Contracts?action=edit&id=${contract.contractId}" class="btn btn-warning btn-sm">Edit</a>                                                                   

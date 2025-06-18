@@ -179,7 +179,7 @@ public class ContractServlet extends HttpServlet {
                 contract.setRoomId(roomId);
                 contract.setStartDate(startDate);
                 contract.setEndDate(endDate);
-                contract.setStatus(status);
+                contract.setContractstatus(status);
 
                 ContractDAO contractDAO = new ContractDAO();
                 contractDAO.updateContract(contract);

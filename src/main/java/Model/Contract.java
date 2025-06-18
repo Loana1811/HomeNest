@@ -11,41 +11,26 @@ public class Contract {
     private String roomNumber;
     private Date startDate;
     private Date endDate;
-    private String status;
-    private Date createdAt;
+    private String contractstatus;
+    private Date contractcreatedAt;
     private double amount;
 
     public Contract() {
     }
 
-    public Contract(int contractId, int roomId, Date startDate, Date endDate, String status, Date createdAt) {
-        this.contractId = contractId;
-        this.roomId = roomId;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.status = status;
-        this.createdAt = createdAt;
-    }
-
-    public Contract(int contractId, int tenantId, int roomId, Date startDate, Date endDate, String status, Date createdAt) {
+    public Contract(int contractId, int tenantId, int roomId, Date startDate, Date endDate, String contractstatus, Date contractcreatedAt) {
         this.contractId = contractId;
         this.tenantId = tenantId;
         this.roomId = roomId;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.status = status;
-        this.createdAt = createdAt;
+        this.contractstatus = contractstatus;
+        this.contractcreatedAt = contractcreatedAt;
     }
+    
+    
+    
 
-    public Contract(int tenantId, int roomId, Date startDate, Date endDate, String status) {
-        this.tenantId = tenantId;
-        this.roomId = roomId;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.status = status;
-    }
-
-    // Getters and Setters
     public int getContractId() {
         return contractId;
     }
@@ -102,20 +87,20 @@ public class Contract {
         this.endDate = endDate;
     }
 
-    public String getStatus() {
-        return status;
+    public String getContractstatus() {
+        return contractstatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setContractstatus(String contractstatus) {
+        this.contractstatus = contractstatus;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public Date getContractcreatedAt() {
+        return contractcreatedAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setContractcreatedAt(Date contractcreatedAt) {
+        this.contractcreatedAt = contractcreatedAt;
     }
 
     public double getAmount() {
@@ -125,4 +110,6 @@ public class Contract {
     public void setAmount(double amount) {
         this.amount = amount;
     }
+
+   
 }

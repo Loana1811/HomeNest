@@ -56,7 +56,7 @@ public class RoomDAO extends DBContext {
                 room.setRentPrice(rs.getDouble("RentPrice"));
                 room.setArea(rs.getDouble("Area"));
                 room.setLocation(rs.getString("Location"));
-                room.setStatus(rs.getString("Status"));
+                room.setStatus(rs.getString("RoomStatus"));
                 room.setBlockID(rs.getInt("BlockID"));
                 room.setCategoryID(rs.getInt("CategoryID"));
                 System.out.println("ROOM: " + room.getRoomID() + " - " + room.getRoomNumber());
@@ -85,7 +85,7 @@ public class RoomDAO extends DBContext {
                 room.setRentPrice(rs.getDouble("RentPrice"));
                 room.setArea(rs.getDouble("Area"));
                 room.setLocation(rs.getString("Location"));
-                room.setStatus(rs.getString("Status"));
+                room.setStatus(rs.getString("RoomStatus"));
                 room.setBlockID(rs.getInt("BlockID"));
                 room.setCategoryID(rs.getInt("CategoryID"));
             }

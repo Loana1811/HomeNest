@@ -16,7 +16,7 @@ public class Room {
     private double rentPrice;
     private double area;
     private String location;
-    private String status;
+    private String roomstatus;
     private int blockID;
     private int categoryID;
 
@@ -31,7 +31,7 @@ public class Room {
         this.rentPrice = rentPrice;
         this.area = area;
         this.location = location;
-        this.status = status;
+        this.roomstatus = status;
         this.blockID = blockID;
         this.categoryID = categoryID;
     }
@@ -77,11 +77,11 @@ public class Room {
     }
 
     public String getStatus() {
-        return status;
+        return roomstatus;
     }
 
     public void setStatus(String status) {
-        this.status = status;
+        this.roomstatus = status;
     }
 
     public int getBlockID() {
